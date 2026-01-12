@@ -26,8 +26,10 @@ connectDB();
    MIDDLEWARES
    ========================= */
 app.use(cors({
-  origin: "*"
+  origin: "https://placement-ai.vercel.app",
+  credentials: true
 }));
+
 app.use(express.json());
 
 /* =========================
