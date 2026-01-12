@@ -25,10 +25,13 @@ connectDB();
 /* =========================
    MIDDLEWARES
    ========================= */
+const cors = require("cors");
+
 app.use(cors({
-  origin: "https://placement-ai.vercel.app",
+  origin: "https://placement-ai-frontend.onrender.com",
   credentials: true
 }));
+
 
 app.use(express.json());
 
