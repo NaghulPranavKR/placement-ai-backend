@@ -23,20 +23,23 @@ const app = express();
 connectDB();
 
 /* =========================
-   MIDDLEWARES
+   MIDDLEWARES (FIXED)
    ========================= */
-const cors = require("cors");
+app.use(
+  cors({
+    origin: "https://placement-ai-frontend.onrender.com",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 
-app.use(cors({
-  origin: "https://placement-ai-frontend.onrender.com",
-  credentials: true
-}));
-
+// IMPORTANT: handle preflight
+app.options("*", cors());
 
 app.use(express.json());
 
 /* =========================
-   ROOT ROUTE (IMPORTANT)
+   ROOT ROUTE
    ========================= */
 app.get("/", (req, res) => {
   res.send("🚀 Placement AI Backend is Live!");
@@ -54,17 +57,12 @@ app.use("/api/chat", chatRoutes);
 app.post("/ask", async (req, res) => {
   try {
     const { message } = req.body;
-
     if (!message) {
       return res.status(400).json({ error: "Message is required" });
     }
 
     const aiReply = await getPlacementAIResponse(message);
-
-    res.json({
-      question: message,
-      answer: aiReply
-    });
+    res.json({ question: message, answer: aiReply });
   } catch (error) {
     console.error("AI error:", error);
     res.status(500).json({ error: "AI response failed" });
@@ -72,7 +70,7 @@ app.post("/ask", async (req, res) => {
 });
 
 /* =========================
-   SERVER START (RENDER SAFE)
+   SERVER START
    ========================= */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
